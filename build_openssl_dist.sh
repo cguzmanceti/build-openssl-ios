@@ -43,13 +43,13 @@ curl -O https://raw.githubusercontent.com/cguzmanceti/build-openssl-ios/master/p
 #cp ../patch-conf.patch .
 patch Configurations/10-main.conf < patch-conf.patch
 
-build_for iosi386sim-cross i386 SIM || exit 2
-build_for ios64sim-cross x86_64 SIM || exit 2
-build_for ios-cross armv7s IOS || exit 4
-build_for ios64-cross arm64 IOS || exit 5
+build_for darwin-i386-cc i386 SIM || exit 3
+build_for ios64sim-cross x86_64 SIM || exit 4
+build_for ios-cross armv7s IOS || exit 5
+build_for ios64-cross arm64 IOS || exit 6
 
-pack_for ssl || exit 6
-pack_for crypto || exit 7
+pack_for ssl || exit 7
+pack_for crypto || exit 8
 
 cp -r ${TMP_DIR}/armv7s/include ${TMP_DIR}/
 curl -O https://raw.githubusercontent.com/cguzmanceti/build-openssl-ios/master/patch-include.patch
