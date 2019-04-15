@@ -32,16 +32,18 @@ function pack_for ()
   LIBNAME=$1
   mkdir -p ${TMP_DIR}/lib/
   ${DEVROOT}/usr/bin/lipo \
+  	${TMP_DIR}/i386/lib/lib${LIBNAME}.a \
 	${TMP_DIR}/x86_64/lib/lib${LIBNAME}.a \
 	${TMP_DIR}/armv7s/lib/lib${LIBNAME}.a \
 	${TMP_DIR}/arm64/lib/lib${LIBNAME}.a \
 	-output ${TMP_DIR}/lib/lib${LIBNAME}.a -create
 }
 
-curl -O https://raw.githubusercontent.com/sinofool/build-openssl-ios/master/patch-conf.patch
+curl -O https://raw.githubusercontent.com/cguzmanceti/build-openssl-ios/master/patch-conf.patch
 #cp ../patch-conf.patch .
 patch Configurations/10-main.conf < patch-conf.patch
 
+build_for iosi386sim-cross i386 SIM || exit 2
 build_for ios64sim-cross x86_64 SIM || exit 2
 build_for ios-cross armv7s IOS || exit 4
 build_for ios64-cross arm64 IOS || exit 5
@@ -50,7 +52,7 @@ pack_for ssl || exit 6
 pack_for crypto || exit 7
 
 cp -r ${TMP_DIR}/armv7s/include ${TMP_DIR}/
-curl -O https://raw.githubusercontent.com/sinofool/build-openssl-ios/master/patch-include.patch
+curl -O https://raw.githubusercontent.com/cguzmanceti/build-openssl-ios/master/patch-include.patch
 #cp ../build-openssl-ios/patch-include.patch .
 patch -p3 ${TMP_DIR}/include/openssl/opensslconf.h < patch-include.patch
 
